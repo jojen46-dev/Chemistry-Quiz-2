@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chem 10 · Study &amp; Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFF4EF;
+    --paper:#FFFFFF;
+    --ink:#152521;
+    --ink-soft:#51625B;
+    --line:#DAE4DC;
+    --teal:#0E8F76;
+    --teal-dark:#0A6E5B;
+    --teal-tint:#E4F3EE;
+    --amber:#E8A33D;
+    --amber-dark:#B87A17;
+    --amber-tint:#FBF1DF;
+    --good:#2F9E58;
+    --good-bg:#E8F6EC;
+    --good-line:#B7E2C4;
+    --bad:#D6483C;
+    --bad-bg:#FCEAE8;
+    --bad-line:#F1BDB7;
+    --radius-sm:8px;
+    --radius-md:14px;
+    --radius-lg:20px;
+    --shadow:0 2px 14px rgba(21,37,33,.08);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',sans-serif;
+    color:var(--ink);
+    margin:0 0 .4em;
+    line-height:1.2;
+  }
+  p{margin:0 0 .8em;}
+  ul{margin:0 0 .8em; padding-left:1.2em;}
+  li{margin-bottom:.35em;}
+  a{color:var(--teal-dark);}
+  button{font-family:inherit;}
+  :focus-visible{outline:3px solid var(--amber); outline-offset:2px;}
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px;
+    background:var(--ink);
+    color:#fff;
+    padding:14px 22px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+  }
+  .brand{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700; font-size:1.15rem; letter-spacing:.2px;
+    display:flex; align-items:center; gap:9px;
+  }
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);display:inline-block;}
+  .tabs{display:flex; gap:8px; background:rgba(255,255,255,.08); padding:5px; border-radius:999px;}
+  .tab-btn{
+    border:none; background:transparent; color:#cfe0d9;
+    padding:9px 20px; border-radius:999px; cursor:pointer;
+    font-weight:600; font-size:.95rem;
+    transition:background .18s, color .18s;
+  }
+  .tab-btn.active{background:var(--teal); color:#fff;}
+  .tab-btn:hover:not(.active){background:rgba(255,255,255,.12); color:#fff;}
+
+  main{max-width:1180px; margin:0 auto; padding:24px 20px 80px;}
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ---------- Study tab ---------- */
+  .study-intro{margin-bottom:22px;}
+  .study-intro h1{font-size:1.7rem;}
+  .study-intro p{color:var(--ink-soft); max-width:62ch;}
+
+  .study-layout{display:grid; grid-template-columns:250px 1fr; gap:26px; align-items:start;}
+
+  .quickjump{
+    position:sticky; top:78px;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:14px; max-height:calc(100vh - 100px); overflow-y:auto;
+  }
+  .quickjump h4{font-size:.72rem; letter-spacing:.03em; color:var(--ink-soft); margin:14px 0 6px; text-transform:none;}
+  .quickjump h4:first-child{margin-top:0;}
+  .quickjump ul{list-style:none; margin:0 0 4px; padding:0;}
+  .quickjump a{
+    display:block; padding:6px 8px; border-radius:8px; font-size:.86rem;
+    text-decoration:none; color:var(--ink-soft);
+  }
+  .quickjump a:hover{background:var(--teal-tint); color:var(--teal-dark);}
+
+  .search-row{
+    display:flex; gap:10px; align-items:center;
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:10px 14px; margin-bottom:22px;
+  }
+  .search-row svg{flex-shrink:0; color:var(--ink-soft);}
+  #studySearch{
+    flex:1; border:none; outline:none; font-size:1rem; font-family:inherit;
+    background:transparent; color:var(--ink);
+  }
+  .search-count{font-size:.82rem; color:var(--ink-soft); white-space:nowrap;}
+
+  .topic-group{margin-bottom:34px;}
+  .topic-group > h2{
+    font-size:1.35rem; color:var(--teal-dark);
+    padding-bottom:8px; border-bottom:2px solid var(--teal-tint);
+    margin-bottom:16px;
+  }
+  .subsection{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:18px 20px; margin-bottom:14px; scroll-margin-top:150px;
+    transition:opacity .2s, box-shadow .4s, border-color .4s;
+  }
+  .subsection h3{font-size:1.05rem; margin-bottom:.5em;}
+  .subsection.dim{opacity:.28;}
+  .subsection.flash-highlight{
+    border-color:var(--amber); box-shadow:0 0 0 4px var(--amber-tint);
+  }
+  .subsection .tag{
+    display:inline-block; font-size:.7rem; font-weight:600; color:var(--teal-dark);
+    background:var(--teal-tint); padding:2px 9px; border-radius:999px; margin-bottom:8px;
+  }
+  .mini-table{width:100%; border-collapse:collapse; font-size:.92rem; margin:.6em 0;}
+  .mini-table th, .mini-table td{border:1px solid var(--line); padding:6px 10px; text-align:left;}
+  .mini-table th{background:var(--teal-tint); color:var(--teal-dark);}
+  code.chem{background:var(--amber-tint); padding:1px 6px; border-radius:5px; font-family:inherit; font-weight:600; color:var(--amber-dark);}
+
+  /* ---------- Quiz tab ---------- */
+  .quiz-wrap{max-width:720px; margin:0 auto;}
+  .quiz-screen{display:none;}
+  .quiz-screen.active{display:block;}
+
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:28px 26px; box-shadow:var(--shadow);
+  }
+
+  /* setup */
+  .setup-card h1{font-size:1.5rem;}
+  .setup-card > p{color:var(--ink-soft); margin-bottom:24px;}
+  .field-label{font-weight:600; font-size:.9rem; margin-bottom:10px; display:block;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:26px;}
+  .chip{
+    border:1.5px solid var(--line); background:#fff; color:var(--ink);
+    padding:9px 16px; border-radius:999px; cursor:pointer; font-size:.9rem; font-weight:500;
+    transition:all .15s;
+  }
+  .chip:hover{border-color:var(--teal);}
+  .chip.selected{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .chip:disabled{opacity:.35; cursor:not-allowed;}
+  .chip:disabled:hover{border-color:var(--line);}
+  .avail-note{font-size:.82rem; color:var(--ink-soft); margin:-14px 0 26px;}
+  .btn-primary{
+    background:var(--teal); color:#fff; border:none; padding:13px 26px; border-radius:12px;
+    font-size:1rem; font-weight:600; cursor:pointer; width:100%;
+    transition:background .15s;
+  }
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-secondary{
+    background:#fff; color:var(--teal-dark); border:1.5px solid var(--teal); padding:11px 22px;
+    border-radius:12px; font-size:.95rem; font-weight:600; cursor:pointer;
+  }
+  .btn-secondary:hover{background:var(--teal-tint);}
+  .btn-text{background:none; border:none; color:var(--teal-dark); font-weight:600; cursor:pointer; padding:4px; font-size:.9rem;}
+
+  /* question */
+  .progress-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:.85rem; color:var(--ink-soft); font-weight:600;}
+  .progress-bar{height:6px; background:var(--line); border-radius:99px; overflow:hidden; margin-bottom:22px;}
+  .progress-fill{height:100%; background:var(--teal); border-radius:99px; transition:width .3s;}
+  .topic-pill{
+    display:inline-block; font-size:.72rem; font-weight:700; color:var(--amber-dark);
+    background:var(--amber-tint); padding:3px 10px; border-radius:999px; margin-bottom:12px;
+  }
+  .q-text{font-size:1.18rem; font-weight:600; margin-bottom:20px; line-height:1.45;}
+  .options{display:flex; flex-direction:column; gap:10px; margin-bottom:6px;}
+  .opt-btn{
+    display:flex; align-items:center; gap:12px; text-align:left;
+    border:1.5px solid var(--line); background:#fff; border-radius:12px; padding:13px 16px;
+    font-size:.98rem; cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .opt-btn:hover:not(:disabled){border-color:var(--teal);}
+  .opt-btn .badge{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--bg);
+    display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; color:var(--ink-soft);
+  }
+  .opt-btn:disabled{cursor:default;}
+  .opt-btn.correct{background:var(--good-bg); border-color:var(--good-line);}
+  .opt-btn.correct .badge{background:var(--good); color:#fff;}
+  .opt-btn.incorrect{background:var(--bad-bg); border-color:var(--bad-line);}
+  .opt-btn.incorrect .badge{background:var(--bad); color:#fff;}
+
+  .feedback-box{
+    margin-top:18px; padding:14px 16px; border-radius:12px; font-size:.94rem;
+    border:1.5px solid; display:none;
+  }
+  .feedback-box.show{display:block;}
+  .feedback-box.good{background:var(--good-bg); border-color:var(--good-line); color:#164a2c;}
+  .feedback-box.bad{background:var(--bad-bg); border-color:var(--bad-line); color:#6d2119;}
+  .feedback-title{font-weight:700; margin-bottom:4px; display:block;}
+  .feedback-actions{display:flex; gap:14px; margin-top:12px; align-items:center; flex-wrap:wrap;}
+
+  .next-row{margin-top:20px; display:none;}
+  .next-row.show{display:block;}
+
+  /* results */
+  .score-hero{text-align:center; padding:10px 0 22px;}
+  .score-num{font-family:'Space Grotesk',sans-serif; font-size:3.2rem; font-weight:700; color:var(--teal-dark);}
+  .score-sub{color:var(--ink-soft); font-size:.95rem;}
+  .breakdown{margin:22px 0;}
+  .breakdown h3{font-size:1rem; margin-bottom:10px;}
+  .bd-row{display:flex; align-items:center; gap:10px; margin-bottom:9px; font-size:.9rem;}
+  .bd-label{width:180px; flex-shrink:0; color:var(--ink-soft);}
+  .bd-track{flex:1; height:9px; background:var(--line); border-radius:99px; overflow:hidden;}
+  .bd-fill{height:100%; background:var(--teal); border-radius:99px;}
+  .bd-frac{width:52px; text-align:right; font-weight:600; flex-shrink:0;}
+
+  .missed-list{margin-top:8px;}
+  .missed-item{
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:10px;
+  }
+  .missed-q{font-weight:600; margin-bottom:8px;}
+  .missed-ans{font-size:.88rem; margin-bottom:4px;}
+  .missed-ans .you{color:var(--bad);}
+  .missed-ans .right{color:var(--good);}
+  .missed-explain{font-size:.88rem; color:var(--ink-soft); margin-top:6px;}
+  .result-actions{display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;}
+  .result-actions .btn-primary, .result-actions .btn-secondary{width:auto; flex:1; min-width:160px;}
+
+  /* responsive */
+  @media (max-width:860px){
+    .study-layout{grid-template-columns:1fr;}
+    .quickjump{position:static; max-height:none; display:flex; flex-wrap:nowrap; overflow-x:auto; gap:4px;}
+    .quickjump h4{display:none;}
+    .quickjump ul{display:flex; gap:6px;}
+    .quickjump li{flex-shrink:0;}
+    .topbar{padding:12px 14px;}
+    main{padding:18px 14px 60px;}
+    .bd-label{width:120px; font-size:.8rem;}
+  }
+  @media (max-width:480px){
+    .brand span.label{display:none;}
+    .tab-btn{padding:9px 14px; font-size:.85rem;}
+    .card{padding:20px 16px;}
+    .score-num{font-size:2.4rem;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot"></span><span class="label">Chem 10 · Unit 1</span></div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="study" id="tabStudyBtn">Study Material</button>
+    <button class="tab-btn" data-tab="quiz" id="tabQuizBtn">Quiz</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ================= STUDY TAB ================= -->
+<section class="tab-panel active" id="panelStudy">
+  <div class="study-intro">
+    <h1>Introduction to Chemistry — Study Material</h1>
+    <p>Everything from Topic 1–3 and the lab worksheets, organized for quick review. Search for a term or jump straight to a section — and when the quiz points you back here, you'll land in the right spot.</p>
+  </div>
+
+  <div class="study-layout">
+    <aside class="quickjump" id="quickjump">
+      <h4>Topic 1 · Nature of Chemistry</h4>
+      <ul>
+        <li><a href="#sec-nature-what">What is chemistry</a></li>
+        <li><a href="#sec-nature-body">Chemistry in you &amp; your world</a></li>
+        <li><a href="#sec-nature-applied">Applied chemistry fields</a></li>
+        <li><a href="#sec-nature-volcano">Case study: predicting eruptions</a></li>
+        <li><a href="#sec-nature-darkside">The dark side of chemistry</a></li>
+      </ul>
+      <h4>Topic 2 · States of Matter</h4>
+      <ul>
+        <li><a href="#sec-states-forms">The four states</a></li>
+        <li><a href="#sec-states-changes">Changes of state</a></li>
+        <li><a href="#sec-states-properties">Physical vs chemical properties</a></li>
+        <li><a href="#sec-states-changetypes">Physical vs chemical changes</a></li>
+        <li><a href="#sec-composition-tree">Elements, compounds &amp; mixtures</a></li>
+        <li><a href="#sec-composition-mixtures">Homogeneous vs heterogeneous</a></li>
+        <li><a href="#sec-separation-rule">The separation golden rule</a></li>
+        <li><a href="#sec-separation-tree">Mixture diagnostic tree</a></li>
+        <li><a href="#sec-separation-filtration">Filtration &amp; decantation</a></li>
+        <li><a href="#sec-separation-evap">Evaporation &amp; crystallization</a></li>
+        <li><a href="#sec-separation-liquids">Separating funnel &amp; distillation</a></li>
+        <li><a href="#sec-separation-solidsol">Sublimation &amp; extraction</a></li>
+        <li><a href="#sec-separation-chromatography">Chromatography &amp; Rf values</a></li>
+      </ul>
+      <h4>Topic 3 · Scientific Method</h4>
+      <ul>
+        <li><a href="#sec-method-steps">The 8 steps</a></li>
+        <li><a href="#sec-method-example">Worked example: Maya's tomatoes</a></li>
+        <li><a href="#sec-method-experiment">Designing the experiment</a></li>
+        <li><a href="#sec-method-data">Analyzing data &amp; conclusions</a></li>
+        <li><a href="#sec-method-report">Reporting &amp; publishing</a></li>
+      </ul>
+      <h4>Lab Skills &amp; Safety</h4>
+      <ul>
+        <li><a href="#sec-lab-glassware">Measuring volume &amp; timing</a></li>
+        <li><a href="#sec-lab-hazard">Hazard symbols &amp; storage</a></li>
+        <li><a href="#sec-lab-firstaid">First aid &amp; emergencies</a></li>
+        <li><a href="#sec-lab-balance">Using an electronic balance</a></li>
+        <li><a href="#sec-lab-pipette">Using a pipette bulb</a></li>
+        <li><a href="#sec-lab-chromprep">Setting up paper chromatography</a></li>
+      </ul>
+    </aside>
+
+    <div class="study-main">
+      <div class="search-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="studySearch" placeholder="Search the study material…" autocomplete="off">
+        <span class="search-count" id="searchCount"></span>
+      </div>
+
+      <!-- TOPIC 1 -->
+      <div class="topic-group" id="topic-nature">
+        <h2>Topic 1 · The Nature of Chemistry</h2>
+
+        <div class="subsection" id="sec-nature-what">
+          <span class="tag">Definition</span>
+          <h3>What is chemistry?</h3>
+          <p>Chemistry is the branch of natural science dedicated to the comprehensive study of <strong>matter and energy</strong>. It's organized around four ideas:</p>
+          <ul>
+            <li><strong>Composition</strong> — what matter is made of.</li>
+            <li><strong>Structure</strong> — how the components of matter are bonded together.</li>
+            <li><strong>Properties</strong> — how matter behaves physically and chemically.</li>
+            <li><strong>Changes</strong> — how matter transforms and transfers energy.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-nature-body">
+          <span class="tag">You are chemistry</span>
+          <h3>Chemistry in your body and your world</h3>
+          <p>The human body itself is a complex chemical construct. By mass, it's roughly:</p>
+          <ul>
+            <li>Oxygen (O): <strong>65.0%</strong></li>
+            <li>Carbon (C): <strong>18.5%</strong></li>
+            <li>Hydrogen (H): <strong>9.5%</strong></li>
+            <li>Nitrogen (N): <strong>3.2%</strong></li>
+            <li>Calcium, phosphorus &amp; trace elements: <strong>~3.8%</strong></li>
+          </ul>
+          <p>Everyday products are precisely engineered chemical formulations too. On a toothpaste ingredients label:</p>
+          <ul>
+            <li><strong>Lauric Acid &amp; Stearic Acid</strong> — cleansing agents.</li>
+            <li><strong>Sodium Laureth Sulfate</strong> — foaming compound.</li>
+            <li><strong>Propylene Glycol</strong> — moisture retention.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-nature-applied">
+          <span class="tag">Applied chemistry</span>
+          <h3>Chemistry as the engine of modern life</h3>
+          <p>Applied chemistry touches six major fields: <strong>Beauty</strong>, <strong>Agriculture</strong>, <strong>Archaeology</strong>, <strong>Medicine</strong>, <strong>Industry</strong>, and <strong>Geology</strong>.</p>
+          <ul>
+            <li><strong>Healing and growing</strong> — chemistry drives pharmaceutical innovation (life-saving drugs, disease prevention, medical treatments) and secures the global food supply through fertilizers and targeted pesticides.</li>
+            <li><strong>Building and discovering</strong> — industry gets its raw materials (cement, paints, plastics, synthetic textiles) from chemistry; geology uses it to discover and identify minerals and ores; archaeology uses techniques like radiocarbon dating to date fossils and artifacts.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-nature-volcano">
+          <span class="tag">Case study</span>
+          <h3>Predicting volcanic eruptions (Geochemistry)</h3>
+          <p>Subjects involved: Chemistry + Geology.</p>
+          <p><strong>The problem:</strong> active volcanoes are notoriously unpredictable — traditional geological methods (like tracking micro-earthquakes) often don't give enough warning time for a safe evacuation.</p>
+          <p><strong>The chemical connection:</strong> deep underground, high pressure keeps gases dissolved in magma. As magma rises, pressure drops and gases escape first. By constantly monitoring the changing <strong>carbon-to-sulfur ratio (CO₂/SO₂)</strong> of gases leaking from volcanic vents, geochemists can tell how close magma is to the surface — a highly accurate early-warning system.</p>
+        </div>
+
+        <div class="subsection" id="sec-nature-darkside">
+          <span class="tag">Risks &amp; responsibility</span>
+          <h3>The dark side of chemical mastery</h3>
+          <p>Unchecked scientific advancement carries severe global consequences:</p>
+          <ul>
+            <li><strong>Atomic weaponry</strong> — manipulating atomic structures for unprecedented destructive power.</li>
+            <li><strong>Industrial pollution</strong> — severe ecological damage from factory chemical waste dumped into the environment.</li>
+          </ul>
+          <p><strong>The plastic paradox:</strong> plastics are a miracle of chemical engineering — durable, cheap, versatile — yet excessive reliance and improper disposal have created a global environmental crisis. The next era of chemistry isn't just about creating new materials, but engineering sustainable lifecycles for the materials we already rely on.</p>
+        </div>
+      </div>
+
+      <!-- TOPIC 2 -->
+      <div class="topic-group" id="topic-states">
+        <h2>Topic 2 · States of Matter</h2>
+
+        <div class="subsection" id="sec-states-forms">
+          <span class="tag">States</span>
+          <h3>The four states of matter</h3>
+          <table class="mini-table">
+            <tr><th>State</th><th>Particle behavior</th><th>Shape &amp; volume</th></tr>
+            <tr><td>Solid (s)</td><td>Packed tightly in a fixed, orderly arrangement; only vibrate in place</td><td>Fixed shape and volume; not compressible, doesn't flow</td></tr>
+            <tr><td>Liquid (l)</td><td>Close together but move past one another; weaker forces than solids</td><td>Takes the shape of its container; fixed volume; slightly compressible</td></tr>
+            <tr><td>Gas (g)</td><td>Far apart, moving rapidly; high kinetic energy, weak forces</td><td>No fixed shape or volume; expands to fill container; easily compressed</td></tr>
+            <tr><td>Aqueous (aq)</td><td>A substance dissolved in water</td><td>e.g. <code class="chem">NaCl(s) → Na⁺(aq) + Cl⁻(aq)</code></td></tr>
+          </table>
+        </div>
+
+        <div class="subsection" id="sec-states-changes">
+          <span class="tag">Changes of state</span>
+          <h3>Melting, freezing, and the rest</h3>
+          <p>Adding or removing energy changes a substance's state <strong>without changing its identity</strong>.</p>
+          <table class="mini-table">
+            <tr><th>Term</th><th>Change</th><th>Heat</th></tr>
+            <tr><td>Melting</td><td>Solid → Liquid</td><td>Addition</td></tr>
+            <tr><td>Freezing</td><td>Liquid → Solid</td><td>Removal</td></tr>
+            <tr><td>Vaporization (evaporating &amp; boiling)</td><td>Liquid → Gas</td><td>Addition</td></tr>
+            <tr><td>Condensation</td><td>Gas → Liquid</td><td>Removal</td></tr>
+            <tr><td>Sublimation</td><td>Solid → Gas (skips liquid)</td><td>Addition</td></tr>
+            <tr><td>Deposition</td><td>Gas → Solid (skips liquid)</td><td>Removal</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection" id="sec-states-properties">
+          <span class="tag">Properties</span>
+          <h3>Physical vs. chemical properties</h3>
+          <ul>
+            <li><strong>Physical properties</strong> (observable without changing the substance): state of matter, color, solubility, magnetism, density.</li>
+            <li><strong>Chemical properties</strong> (observable only during a chemical reaction): flammability, decay/rot, corrosion/rust, explosiveness, toxicity.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-states-changetypes">
+          <span class="tag">Changes</span>
+          <h3>Physical vs. chemical changes</h3>
+          <ul>
+            <li><strong>Chemical change</strong> — a reaction forms new products. Examples: combustion, rotting, rusting, digestion.</li>
+            <li><strong>Physical change</strong> — matter changes form but not chemical identity. Examples: melting, shredding, boiling, chopping.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-composition-tree">
+          <span class="tag">Composition</span>
+          <h3>Elements, compounds &amp; mixtures</h3>
+          <p>Matter splits into <strong>pure substances</strong> (elements, compounds) and <strong>mixtures</strong>:</p>
+          <ul>
+            <li><strong>Elements (Unsur)</strong> — simplest substances, indivisible by chemical means. Examples: Na, H, O, Fe, C.</li>
+            <li><strong>Compounds (Senyawa)</strong> — two or more elements combined in fixed ratios. Examples: CO₂, H₂O, CaCO₃.</li>
+            <li><strong>Mixtures (Campuran)</strong> — combinations where the original properties of the components stay unchanged. Examples: sugar solution, milk.</li>
+          </ul>
+          <p>A decision tree refines pure substances further: does it contain different types of atoms? <strong>No → Element</strong> — then does it consist of molecules? No → <em>atomic</em> (e.g. Ar), Yes → <em>molecular</em> (e.g. Cl₂). <strong>Yes → Compound</strong> — does it consist of molecules? Yes → <em>molecular compound</em> (e.g. H₂O), No → <em>formula unit</em> (e.g. NaCl).</p>
+        </div>
+
+        <div class="subsection" id="sec-composition-mixtures">
+          <span class="tag">Mixtures</span>
+          <h3>Homogeneous vs. heterogeneous mixtures</h3>
+          <p>A <strong>heterogeneous mixture</strong> is a multi-phase substance with non-uniform composition. Examples: salad (solid), ice cubes in a drink (liquid), smog (gaseous). A <strong>homogeneous mixture</strong> has uniform composition throughout — like sweet tea (water, sugar, and tea extract evenly dissolved) or a fully dissolved salt solution.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-rule">
+          <span class="tag">Separation</span>
+          <h3>The golden rule of separation</h3>
+          <p>Separation exploits physical differences. <strong>Golden rule:</strong> to separate any mixture, find the physical property where the components differ the most.</p>
+          <table class="mini-table">
+            <tr><th>Property</th><th>Technique</th></tr>
+            <tr><td>Particle size</td><td>Filtration / dialysis</td></tr>
+            <tr><td>Density &amp; gravity</td><td>Decantation / centrifugation / separating funnel</td></tr>
+            <tr><td>Boiling point (volatility)</td><td>Distillation / evaporation</td></tr>
+            <tr><td>Solubility &amp; affinity</td><td>Extraction / crystallization / chromatography</td></tr>
+            <tr><td>Magnetic susceptibility</td><td>Magnetic separation</td></tr>
+          </table>
+        </div>
+
+        <div class="subsection" id="sec-separation-tree">
+          <span class="tag">Separation</span>
+          <h3>The mixture diagnostic tree</h3>
+          <table class="mini-table">
+            <tr><th>Mixture type</th><th>Technique</th></tr>
+            <tr><td>Solid + liquid, insoluble (sand + water)</td><td>Filtration or decantation</td></tr>
+            <tr><td>Solid + liquid, soluble (salt + water)</td><td>Evaporation or crystallization</td></tr>
+            <tr><td>Liquid + liquid, immiscible (oil + water)</td><td>Separating funnel</td></tr>
+            <tr><td>Liquid + liquid, miscible (ethanol + water)</td><td>Simple or fractional distillation</td></tr>
+            <tr><td>Solid + solid, one sublimates (iodine + sand)</td><td>Sublimation</td></tr>
+            <tr><td>Solid + solid, differential solubility</td><td>Extraction</td></tr>
+            <tr><td>Solid + solid, magnetic properties</td><td>Magnetic separation</td></tr>
+          </table>
+          <p><strong>Worked problem:</strong> separating a mixture of sand, salt, and water into pure dry sand and pure dry salt: 1) dissolve the salt completely, 2) filter the mixture, 3) rinse and dry the sand (the residue), 4) evaporate/crystallize the filtrate to recover the salt.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-filtration">
+          <span class="tag">Separation</span>
+          <h3>Filtration &amp; decantation</h3>
+          <p><strong>Decantation</strong> (exploits density): heavy, insoluble solids settle to the bottom (sedimentation); the clear top liquid (the <strong>supernate</strong>) is carefully poured off, leaving the <strong>sediment</strong> behind.</p>
+          <p><strong>Filtration</strong> (exploits particle size): a porous barrier lets liquid pass but traps the solid. The <strong>residue</strong> is the insoluble solid left in the filter paper; the <strong>filtrate</strong> is the liquid that passes through.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-evap">
+          <span class="tag">Separation</span>
+          <h3>Evaporation &amp; crystallization</h3>
+          <p><strong>Evaporation</strong> vaporizes the solvent by continuous heating until only the dry solid solute remains. Best for thermally stable solids where the crystal structure doesn't matter (e.g. recovering salt).</p>
+          <p><strong>Crystallization</strong> is a gentler variant: 1) reduce volume by heating to create a concentrated, saturated solution; 2) allow it to cool slowly at room temperature. The solute "dissolves out" as highly pure, geometrically perfect crystals, which are then filtered and dried.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-liquids">
+          <span class="tag">Separation</span>
+          <h3>Separating funnel &amp; distillation</h3>
+          <p><strong>Immiscible liquids</strong> (e.g. kerosene/oil and water) don't dissolve in one another — they settle into layers by density. A <strong>separating funnel</strong> is used: the heavier liquid settles at the bottom, the stopcock is opened to drain it, and closed exactly at the boundary line to isolate the lighter liquid.</p>
+          <p><strong>Miscible liquids</strong> (e.g. ethanol and water) are separated by <strong>simple distillation</strong>, which exploits significantly different boiling points. Heating: the more volatile liquid (lower boiling point) evaporates first — ethanol at 78°C vs. water at 100°C. Cooling: vapor enters the <strong>condenser</strong> (cold water jacket) and condenses back into liquid in the receiving flask. Pro-tip: verify purity by measuring the distillate's boiling point.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-solidsol">
+          <span class="tag">Separation</span>
+          <h3>Sublimation &amp; extraction</h3>
+          <p><strong>Sublimation</strong> bypasses the liquid phase, transforming specific solids directly to vapor on heating; the vapor cools and undergoes deposition back into solid form. Used for isolating ammonium chloride, iodine, camphor, or sulfur.</p>
+          <p><strong>Extraction</strong> exploits differential solubility: a solvent is introduced that selectively dissolves only one component of a solid mixture, leaving the other intact for filtration.</p>
+        </div>
+
+        <div class="subsection" id="sec-separation-chromatography">
+          <span class="tag">Separation</span>
+          <h3>Chromatography &amp; Rf values</h3>
+          <p>Chromatography separates components through the <strong>partitioning principle</strong>: a sample is distributed between a moving <strong>mobile phase</strong> (gas, liquid, or supercritical fluid) and a fixed <strong>stationary phase</strong>. Separation depends on the partition coefficient — how strongly a molecule is attracted to the stationary phase vs. the mobile phase; higher affinity for the stationary phase means slower movement. In paper chromatography specifically, the stationary phase is water trapped in cellulose fibers, and the mobile phase is a moving solvent.</p>
+          <p>Pure substances leave a single spot; mixtures separate into multiple spots. The <strong>retention factor (Rf)</strong> is calculated as:</p>
+          <p><code class="chem">Rf = (distance moved by the compound) ÷ (distance moved by the solvent front)</code></p>
+          <p>Under identical conditions, a compound's Rf value is a constant signature, letting scientists identify unknown components by comparing them against reference standards.</p>
+        </div>
+      </div>
+
+      <!-- TOPIC 3 -->
+      <div class="topic-group" id="topic-method">
+        <h2>Topic 3 · The Scientific Method</h2>
+
+        <div class="subsection" id="sec-method-steps">
+          <span class="tag">Overview</span>
+          <h3>The 8 steps of the scientific method</h3>
+          <p>A step-by-step process for exploring observations, testing ideas, and answering questions:</p>
+          <ul>
+            <li>1. <strong>Observe</strong> — make observations.</li>
+            <li>2. <strong>Question</strong> — ask a question or identify a problem.</li>
+            <li>3. <strong>Research</strong> — search for existing answers or solutions.</li>
+            <li>4. <strong>Hypothesize</strong> — formulate a hypothesis.</li>
+            <li>5. <strong>Experiment</strong> — design and perform an experiment.</li>
+            <li>6. <strong>Test hypothesis</strong> — accept or reject the hypothesis based on results.</li>
+            <li>7. <strong>Draw conclusions</strong> — make conclusions based on the hypothesis.</li>
+            <li>8. <strong>Report</strong> — share your results.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-method-example">
+          <span class="tag">Worked example</span>
+          <h3>Maya's tomato plants</h3>
+          <p><strong>Observation:</strong> Maya notices that the potted tomato plants on her sunny balcony grow much faster and taller than the same type of tomato plants kept on her indoor windowsill, which gets only indirect sunlight.</p>
+          <p><strong>Question:</strong> "How does the intensity of light affect the growth rate (height) of tomato plants?"</p>
+          <p><strong>Research:</strong> gathering existing knowledge — books, articles, prior studies — to inform the hypothesis and experimental design.</p>
+          <p><strong>Hypothesis:</strong> "I think tomatoes will grow taller when they receive more sunlight because sunlight provides energy for photosynthesis."</p>
+        </div>
+
+        <div class="subsection" id="sec-method-experiment">
+          <span class="tag">Experiment design</span>
+          <h3>Designing a controlled experiment</h3>
+          <p>Testing a hypothesis needs a controlled, repeatable procedure, including:</p>
+          <ul>
+            <li><strong>Independent variable</strong> — the one you deliberately change (e.g. hours of sunlight).</li>
+            <li><strong>Dependent variable</strong> — the one you measure as an outcome (e.g. plant height/yield).</li>
+            <li><strong>Controlled variables</strong> — kept the same throughout (e.g. water amount, soil type).</li>
+            <li><strong>Materials</strong> — everything needed to run the experiment.</li>
+            <li><strong>Procedure</strong> — the step-by-step plan for conducting it.</li>
+          </ul>
+        </div>
+
+        <div class="subsection" id="sec-method-data">
+          <span class="tag">Data &amp; conclusions</span>
+          <h3>Analyzing data &amp; drawing conclusions</h3>
+          <p>Results are organized with tables, charts, or graphs to look for patterns. In the tomato example, average fruit yield rose steadily with more daily sunlight: 1.2 kg at 4 hrs, 2.8 kg at 6 hrs, 4.5 kg at 8 hrs, and 5.1 kg at 10 hrs — a 325% total increase from lowest to highest light treatment, with height and flowering speed also showing a positive linear correlation.</p>
+          <p><strong>Drawing conclusions</strong> means deciding whether the data supports or refutes the hypothesis. Here: "The data showed plants in more sunlight grew taller, so the hypothesis was supported."</p>
+        </div>
+
+        <div class="subsection" id="sec-method-report">
+          <span class="tag">Reporting</span>
+          <h3>Reporting &amp; publishing findings</h3>
+          <p>Sharing findings so others can evaluate or replicate the work involves three parts:</p>
+          <ul>
+            <li><strong>Prepare reports &amp; manuscripts</strong> — introduction, methods (for replication), results with raw data access, and discussion, going through manuscript submission, expert review, revision, and publication.</li>
+            <li><strong>Design presentations &amp; posters</strong> — visuals that highlight trends, visualize correlations, and show comparative data with clear legends and captions.</li>
+            <li><strong>Ensure evaluation &amp; replication</strong> — a checklist covering data accessibility, detailed methods, cultivar/specs, and statistical transparency (e.g. p&lt;0.05), enabling independent replication.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- LAB SKILLS -->
+      <div class="topic-group" id="topic-lab">
+        <h2>Lab Skills &amp; Safety</h2>
+
+        <div class="subsection" id="sec-lab-glassware">
+          <span class="tag">Equipment</span>
+          <h3>Measuring volume &amp; timing reactions</h3>
+          <p>When measuring the volume of a sample solution as precisely as possible, a <strong>pipette</strong> — calibrated for a specific volume — is generally the most accurate choice, ahead of a measuring cylinder, beaker, erlenmeyer flask, or test tube.</p>
+          <p>To time how long a reaction (like a neutralization between hydrochloric acid and sodium hydroxide) takes, the right tool is a <strong>stopwatch</strong>.</p>
+        </div>
+
+        <div class="subsection" id="sec-lab-hazard">
+          <span class="tag">Safety</span>
+          <h3>Hazard symbols &amp; safe storage</h3>
+          <p>A pictogram showing liquid dripping from test tubes onto a hand and a surface is the standard symbol for a <strong>corrosive</strong> substance. Other common hazard symbols include flammable (flame), oxidizing (flame over a circle), and toxic (skull and crossbones).</p>
+          <p><strong>Storage rule:</strong> bottles labeled as oxidizing should never be stored next to bottles labeled as flammable — oxidizing agents can accelerate the combustion of flammable substances.</p>
+        </div>
+
+        <div class="subsection" id="sec-lab-firstaid">
+          <span class="tag">Safety</span>
+          <h3>First aid &amp; lab emergencies</h3>
+          <p>If a hand is exposed to hazardous chemicals, the correct first aid is to <strong>flush the hand under continuous running water</strong> — not toothpaste, alcohol, or wiping it dry.</p>
+          <p>A <strong>small, contained fire</strong> can typically be handled directly (by a trained person) using an appropriate fire extinguisher or fire blanket. A <strong>large, uncontrolled fire</strong> should not be tackled alone — evacuate the area and alert emergency services.</p>
+          <p><strong>Broken glass</strong> should never be picked up with bare hands; use a dustpan, brush, or tongs, and dispose of it in a designated sharps/broken-glass bin.</p>
+        </div>
+
+        <div class="subsection" id="sec-lab-balance">
+          <span class="tag">Equipment</span>
+          <h3>Using an electronic balance</h3>
+          <p>The balance must be set to zero before weighing so that the reading reflects only the mass of the sample being weighed — not any container or leftover residue.</p>
+          <p>Things that can cause an inaccurate mass measurement include: the balance not being zeroed/tared, an uneven or unstable surface, air currents or drafts, static electricity, a dirty weighing pan, or vibrations nearby.</p>
+        </div>
+
+        <div class="subsection" id="sec-lab-pipette">
+          <span class="tag">Equipment</span>
+          <h3>Using a pipette bulb (filler)</h3>
+          <p>Before attaching a pipette bulb to a pipette, squeeze the air out of the bulb first. Then, with the pipette tip submerged in the liquid, release the appropriate valve to draw liquid up to the calibration mark, and use another valve to dispense it into the receiving container.</p>
+          <p>If the air isn't squeezed out of the bulb first, there's no vacuum created, so it won't be possible to draw liquid up into the pipette properly.</p>
+        </div>
+
+        <div class="subsection" id="sec-lab-chromprep">
+          <span class="tag">Practical</span>
+          <h3>Setting up paper chromatography</h3>
+          <p>To set up a paper chromatography experiment: draw a pencil line (the baseline/origin) near the bottom of the filter paper, spot the sample on that line, then place the paper in a container with a shallow layer of solvent that sits <strong>below</strong> the pencil line. The solvent rises up the paper without dissolving the original spot directly, and the paper is removed before the solvent front reaches the top edge.</p>
+          <p>Materials needed: chromatography/filter paper, a pencil, a ruler, a beaker or container, solvent, the sample, a spotting capillary tube, and a watch glass or cover to limit evaporation.</p>
+          <p><strong>Why the baseline is drawn in pencil, not pen:</strong> ink can dissolve and run in the solvent, contaminating the results and making the spots harder to read accurately.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ TAB ================= -->
+<section class="tab-panel" id="panelQuiz">
+  <div class="quiz-wrap">
+
+    <!-- SETUP -->
+    <div class="quiz-screen active" id="screenSetup">
+      <div class="card setup-card">
+        <h1>Set up your quiz</h1>
+        <p>100 questions drawn straight from the study material. Pick a topic and a length, and go.</p>
+
+        <span class="field-label">Topic filter</span>
+        <div class="chip-row" id="topicChips"></div>
+
+        <span class="field-label">Quiz length</span>
+        <div class="chip-row" id="lengthChips"></div>
+        <p class="avail-note" id="availNote"></p>
+
+        <button class="btn-primary" id="startQuizBtn">Start quiz</button>
+      </div>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="quiz-screen" id="screenQuestion">
+      <div class="card">
+        <div class="progress-row">
+          <span id="progressLabel">Question 1 of 10</span>
+          <span id="scoreLabel">Score: 0</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span class="topic-pill" id="qTopicPill">Topic</span>
+        <div class="q-text" id="qText">Question text</div>
+        <div class="options" id="qOptions"></div>
+
+        <div class="feedback-box" id="feedbackBox">
+          <span class="feedback-title" id="feedbackTitle">Correct!</span>
+          <span id="feedbackExplain">Explanation text.</span>
+          <div class="feedback-actions">
+            <button class="btn-text" id="reviewBtn">Review this in Study Material</button>
+          </div>
+        </div>
+
+        <div class="next-row" id="nextRow">
+          <button class="btn-primary" id="nextBtn">Next question</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="quiz-screen" id="screenResults">
+      <div class="card">
+        <div class="score-hero">
+          <div class="score-num" id="finalScoreNum">0/0</div>
+          <div class="score-sub" id="finalScorePct">0% correct</div>
+        </div>
+
+        <div class="breakdown">
+          <h3>Score by topic</h3>
+          <div id="breakdownList"></div>
+        </div>
+
+        <div id="missedWrap">
+          <h3 style="font-size:1rem; margin-bottom:10px;">Questions to review</h3>
+          <div class="missed-list" id="missedList"></div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-primary" id="retakeBtn">Retake quiz</button>
+          <button class="btn-secondary" id="backSetupBtn">New quiz setup</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ============================================================
+   TAB SWITCHING
+============================================================ */
+const tabStudyBtn = document.getElementById('tabStudyBtn');
+const tabQuizBtn = document.getElementById('tabQuizBtn');
+const panelStudy = document.getElementById('panelStudy');
+const panelQuiz = document.getElementById('panelQuiz');
+
+function switchTab(name){
+  const toStudy = name === 'study';
+  tabStudyBtn.classList.toggle('active', toStudy);
+  tabQuizBtn.classList.toggle('active', !toStudy);
+  panelStudy.classList.toggle('active', toStudy);
+  panelQuiz.classList.toggle('active', !toStudy);
+}
+tabStudyBtn.addEventListener('click', () => switchTab('study'));
+tabQuizBtn.addEventListener('click', () => switchTab('quiz'));
+
+function reviewSection(sectionId){
+  switchTab('study');
+  const el = document.getElementById(sectionId);
+  if(el){
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+    el.classList.add('flash-highlight');
+    setTimeout(() => el.classList.remove('flash-highlight'), 2200);
+  }
+}
+
+/* ============================================================
+   STUDY SEARCH
+============================================================ */
+const studySearch = document.getElementById('studySearch');
+const searchCount = document.getElementById('searchCount');
+const allSubsections = Array.from(document.querySelectorAll('.subsection'));
+
+studySearch.addEventListener('input', () => {
+  const term = studySearch.value.trim().toLowerCase();
+  if(!term){
+    allSubsections.forEach(s => s.classList.remove('dim'));
+    searchCount.textContent = '';
+    return;
+  }
+  let matchCount = 0;
+  let firstMatch = null;
+  allSubsections.forEach(s => {
+    const text = s.textContent.toLowerCase();
+    const isMatch = text.includes(term);
+    s.classList.toggle('dim', !isMatch);
+    if(isMatch){
+      matchCount++;
+      if(!firstMatch) firstMatch = s;
+    }
+  });
+  searchCount.textContent = matchCount + (matchCount === 1 ? ' match' : ' matches');
+  if(firstMatch) firstMatch.scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+/* ============================================================
+   QUESTION BANK (100 questions, drawn from the study material)
+============================================================ */
+const TOPICS = {
+  nature: "Nature of Chemistry",
+  states: "States of Matter & Changes",
+  composition: "Composition of Matter",
+  separation: "Separation Techniques",
+  method: "Scientific Method",
+  lab: "Lab Equipment & Safety"
+};
+
+const QUESTIONS = [
+{topic:"nature", type:"mc", q:"What is chemistry best defined as?", options:["The study of living organisms only","The branch of natural science dedicated to the comprehensive study of matter and energy","The study of mathematical patterns in nature","The study of planets and stars"], correct:1, explain:"Chemistry is defined as the branch of natural science dedicated to the comprehensive study of matter — its composition, structure, properties, and changes — together with energy.", section:"sec-nature-what"},
+{topic:"nature", type:"mc", q:"In the four-part framework of chemistry, which term refers to how the components of matter are bonded together?", options:["Composition","Structure","Properties","Changes"], correct:1, explain:"Structure describes how the components of matter are bonded together, distinct from composition (what matter is made of).", section:"sec-nature-what"},
+{topic:"nature", type:"mc", q:"Which term describes how matter behaves physically and chemically?", options:["Composition","Structure","Properties","Changes"], correct:2, explain:"Properties describe how matter behaves, both physically and chemically.", section:"sec-nature-what"},
+{topic:"nature", type:"tf", q:"\"Changes\", in the four-part framework of chemistry, refers to how matter transforms and transfers energy.", correct:true, explain:"Changes covers how matter transforms and transfers energy, completing the composition–structure–properties–changes framework.", section:"sec-nature-what"},
+{topic:"nature", type:"mc", q:"Approximately what percentage of the human body is oxygen by chemical composition?", options:["18.5%","65.0%","9.5%","3.2%"], correct:1, explain:"Oxygen makes up about 65.0% of the human body's chemical composition, the largest single component.", section:"sec-nature-body"},
+{topic:"nature", type:"mc", q:"Which element makes up about 18.5% of the human body?", options:["Oxygen","Hydrogen","Carbon","Nitrogen"], correct:2, explain:"Carbon accounts for about 18.5% of the body's composition, behind oxygen's 65.0%.", section:"sec-nature-body"},
+{topic:"nature", type:"mc", q:"On a toothpaste ingredients label, Sodium Laureth Sulfate is best described as a…", options:["Cleansing agent","Foaming compound","Moisture-retention agent","Preservative"], correct:1, explain:"Sodium Laureth Sulfate is identified as the foaming compound, while Lauric/Stearic Acid clean and Propylene Glycol retains moisture.", section:"sec-nature-body"},
+{topic:"nature", type:"tf", q:"Lauric Acid and Stearic Acid on a toothpaste ingredients label act as cleansing agents.", correct:true, explain:"The label lists Lauric Acid and Stearic Acid as cleansing agents.", section:"sec-nature-body"},
+{topic:"nature", type:"tf", q:"Astronomy is one of the six applied chemistry fields shown in the \"Engine of Modern Life\" diagram.", correct:false, explain:"The six fields shown are Beauty, Agriculture, Archaeology, Medicine, Industry, and Geology — astronomy isn't one of them.", section:"sec-nature-applied"},
+{topic:"nature", type:"mc", q:"Radiocarbon dating, used to determine the age of ancient fossils and artifacts, is an application of chemistry in which field?", options:["Medicine","Archaeology","Beauty","Agriculture"], correct:1, explain:"Archaeology uses techniques like radiocarbon dating to determine the age of fossils and artifacts.", section:"sec-nature-applied"},
+{topic:"nature", type:"mc", q:"Producing fertilizers and targeted pesticides to maximize crop yields is chemistry's contribution to which field?", options:["Agriculture","Geology","Archaeology","Beauty"], correct:0, explain:"Chemical engineering produces the fertilizers and pesticides needed to secure the global food supply, supporting agriculture.", section:"sec-nature-applied"},
+{topic:"nature", type:"tf", q:"According to the material, industry has no role in producing raw materials like cement, paints, plastics, or textiles.", correct:false, explain:"Industry provides raw materials for civilization, including cement, paints, plastics, and synthetic textiles.", section:"sec-nature-applied"},
+{topic:"nature", type:"mc", q:"In the volcanic-eruption early-warning example, geochemists track the changing ratio of which two gases to judge how close magma is to the surface?", options:["Oxygen and Nitrogen","Carbon dioxide and Sulfur dioxide","Hydrogen and Helium","Methane and Ammonia"], correct:1, explain:"Monitoring the CO2/SO2 ratio leaking from volcanic vents gives geochemists a highly accurate early-warning system.", section:"sec-nature-volcano"},
+{topic:"nature", type:"mc", q:"Why do traditional geological methods, like tracking micro-earthquakes, often fail to give enough warning before an eruption?", options:["They are too costly to run","They don't provide enough warning time for a safe evacuation","They only work underwater","They require satellite equipment"], correct:1, explain:"Traditional geological methods are noted as often not providing enough warning time for a safe evacuation.", section:"sec-nature-volcano"},
+{topic:"nature", type:"mc", q:"The \"Dark Side of Chemical Mastery\" slide uses atomic weaponry and industrial pollution as examples of…", options:["Beneficial uses of chemistry with no risk","Severe global consequences of unchecked scientific advancement","Natural, uncontrollable disasters","Purely historical events with no modern relevance"], correct:1, explain:"These examples illustrate that unchecked scientific advancement can carry severe global consequences.", section:"sec-nature-darkside"},
+{topic:"nature", type:"tf", q:"According to \"The Plastic Paradox\", the next era of chemistry is about engineering sustainable lifecycles for materials already in use, not just creating new ones.", correct:true, explain:"The material frames the modern challenge as engineering sustainable lifecycles for materials we already rely on.", section:"sec-nature-darkside"},
+
+{topic:"states", type:"mc", q:"Which state of matter has particles packed closely in a fixed, orderly arrangement that only vibrate in place?", options:["Gas","Liquid","Solid","Aqueous"], correct:2, explain:"Solids have particles packed closely in a fixed arrangement, vibrating in place, giving them a fixed shape and volume.", section:"sec-states-forms"},
+{topic:"states", type:"mc", q:"Which state of matter takes the shape of its container but keeps a fixed volume?", options:["Solid","Liquid","Gas","Aqueous"], correct:1, explain:"Liquids take the shape of their container while keeping a fixed volume, since their particles stay close but move past one another.", section:"sec-states-forms"},
+{topic:"states", type:"mc", q:"Gases are described in the material as having…", options:["Fixed shape and volume","Particles far apart, moving rapidly, with weak forces between them","Particles vibrating in one fixed position","The strongest intermolecular forces of any state"], correct:1, explain:"Gas particles are far apart and move rapidly with high kinetic energy and weak forces, so gases expand to fill their container.", section:"sec-states-forms"},
+{topic:"states", type:"tf", q:"Gases are easily compressed, while solids are not compressible.", correct:true, explain:"Because gas particles are far apart, gases compress easily; solids, with tightly packed particles, do not.", section:"sec-states-forms"},
+{topic:"states", type:"mc", q:"The state symbol \"(aq)\", as in NaCl(aq), means the substance is…", options:["A solid","Dissolved in water","A pure gas","At absolute zero"], correct:1, explain:"\"(aq)\" stands for aqueous — a substance dissolved in water.", section:"sec-states-forms"},
+{topic:"states", type:"mc", q:"Which equation correctly shows solid table salt dissolving in water?", options:["NaCl(s) → Na⁺(aq) + Cl⁻(aq)","NaCl(l) → Na(g) + Cl(g)","NaCl(aq) → NaCl(s)","Na(s) + Cl(s) → NaCl(l)"], correct:0, explain:"Dissolving separates the solid into its aqueous ions: NaCl(s) → Na⁺(aq) + Cl⁻(aq).", section:"sec-states-forms"},
+{topic:"states", type:"mc", q:"The change of state from liquid to gas is called…", options:["Condensation","Vaporization","Sublimation","Deposition"], correct:1, explain:"Vaporization (evaporating and boiling) is the liquid-to-gas change of state.", section:"sec-states-changes"},
+{topic:"states", type:"mc", q:"The direct change from a solid to a gas, skipping the liquid phase, is called…", options:["Melting","Deposition","Sublimation","Freezing"], correct:2, explain:"Sublimation takes a solid straight to a gas without passing through the liquid state.", section:"sec-states-changes"},
+{topic:"states", type:"mc", q:"Which change of state happens when a gas turns directly into a solid?", options:["Deposition","Sublimation","Condensation","Freezing"], correct:0, explain:"Deposition is the direct gas-to-solid change, the reverse of sublimation.", section:"sec-states-changes"},
+{topic:"states", type:"tf", q:"Freezing (liquid to solid) happens when heat is added to a substance.", correct:false, explain:"Freezing happens when heat is removed, not added; melting is the one that requires added heat.", section:"sec-states-changes"},
+{topic:"states", type:"tf", q:"Adding or removing energy changes a substance's state without changing its chemical identity.", correct:true, explain:"State changes are physical: the substance's identity stays the same whether it's solid, liquid, or gas.", section:"sec-states-changes"},
+{topic:"states", type:"mc", q:"Condensation is the change of state from…", options:["Solid to liquid","Gas to liquid","Liquid to gas","Solid to gas"], correct:1, explain:"Condensation converts a gas back into a liquid as heat is removed.", section:"sec-states-changes"},
+{topic:"states", type:"mc", q:"Which of these is a physical property of matter?", options:["Flammability","Toxicity","Density","Tendency to rust"], correct:2, explain:"Density is a physical property — observable without changing the substance. Flammability, toxicity, and rusting are chemical properties.", section:"sec-states-properties"},
+{topic:"states", type:"mc", q:"Which of these is a chemical property of matter?", options:["Color","Solubility","Magnetism","Flammability"], correct:3, explain:"Flammability is a chemical property, only observable during a reaction (burning). Color, solubility, and magnetism are physical properties.", section:"sec-states-properties"},
+{topic:"states", type:"tf", q:"Physical properties can be observed without changing the substance, while chemical properties can only be observed during a chemical reaction.", correct:true, explain:"That's exactly the distinction drawn between physical and chemical properties.", section:"sec-states-properties"},
+{topic:"states", type:"mc", q:"Which of the following is a chemical change?", options:["Melting ice","Shredding paper","Rusting of iron","Chopping wood"], correct:2, explain:"Rusting forms a new substance (iron oxide), making it a chemical change. The others just change form.", section:"sec-states-changetypes"},
+{topic:"states", type:"mc", q:"Which of the following is a physical change?", options:["Combustion of wood","Digestion of food","Boiling water","Rotting of fruit"], correct:2, explain:"Boiling water changes its state, not its chemical identity, so it's a physical change.", section:"sec-states-changetypes"},
+{topic:"states", type:"tf", q:"A chemical change forms new products through a chemical reaction, while a physical change alters a substance's form without changing its chemical identity.", correct:true, explain:"This is the core distinction between chemical and physical changes given in the material.", section:"sec-states-changetypes"},
+
+{topic:"composition", type:"mc", q:"Matter is broadly classified into pure substances and…", options:["Elements","Mixtures","Compounds","Atoms"], correct:1, explain:"The composition-of-matter diagram splits matter into pure substances and mixtures.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Pure substances are further divided into elements and…", options:["Mixtures","Solutions","Compounds","Alloys"], correct:2, explain:"Pure substances split into elements and compounds.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Which of the following is given as an example of an element?", options:["H2O","CO2","Fe","CaCO3"], correct:2, explain:"Fe (iron) is listed among the example elements, alongside Na, H, O, and C.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Which of the following is given as an example of a compound?", options:["Na","Fe","H2O","C"], correct:2, explain:"H2O is listed as an example compound, alongside CO2 and CaCO3.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Which of the following is given as an example of a mixture?", options:["CO2","Sugar solution","H","CaCO3"], correct:1, explain:"Sugar solution is listed as an example mixture, alongside milk.", section:"sec-composition-tree"},
+{topic:"composition", type:"tf", q:"Compounds are two or more elements combined in fixed ratios.", correct:true, explain:"That's the definition given for compounds, such as CO2, H2O, and CaCO3.", section:"sec-composition-tree"},
+{topic:"composition", type:"tf", q:"Mixtures are combinations of substances in which the original properties of the components remain unchanged.", correct:true, explain:"Unlike compounds, mixtures keep the original properties of their components.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"In the pure-substance decision tree, a substance made of only one type of atom that does NOT form molecules (like Ar) is classified as…", options:["A molecular element","An atomic element","A molecular compound","A formula unit"], correct:1, explain:"Single atoms of one element that don't bond into molecules, like argon, are classified as atomic elements.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Cl2 is classified in the decision tree as a…", options:["Atomic element","Molecular element","Molecular compound","Formula unit"], correct:1, explain:"Cl2 is one element bonded into molecules, so it's a molecular element.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"H2O, a compound made of molecules, is classified in the decision tree as a…", options:["Formula unit","Atomic element","Molecular compound","Molecular element"], correct:2, explain:"H2O combines different atoms into molecules, making it a molecular compound.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"NaCl, a compound that does not exist as individual molecules, is classified as a…", options:["Molecular compound","Formula unit","Atomic element","Molecular element"], correct:1, explain:"NaCl is made of repeating ionic units rather than discrete molecules, so it's classified by formula unit.", section:"sec-composition-tree"},
+{topic:"composition", type:"mc", q:"Which best describes a heterogeneous mixture?", options:["A mixture with uniform composition throughout","A multi-phase substance with non-uniform composition","A single pure element","A compound with fixed chemical ratios"], correct:1, explain:"Heterogeneous mixtures are multi-phase substances with non-uniform composition.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"mc", q:"Which of these is given as an example of a heterogeneous liquid mixture?", options:["Salad","Ice cubes in a drink","Smog","Sugar water"], correct:1, explain:"Ice cubes in a drink is the liquid-phase example of a heterogeneous mixture given in the material.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"mc", q:"Smog is given as an example of a heterogeneous mixture in which state?", options:["Solid","Liquid","Gaseous","Aqueous only"], correct:2, explain:"Smog represents the gaseous example of a heterogeneous mixture.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"mc", q:"Sweet tea, made of water, sugar, and tea extract, is classified as…", options:["A compound","A heterogeneous mixture","A homogeneous mixture","An element"], correct:2, explain:"Its dissolved components are evenly spread throughout, giving sweet tea a uniform composition — a homogeneous mixture.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"mc", q:"A salad, made of visibly separate vegetable pieces, is an example of a…", options:["Homogeneous mixture","Heterogeneous mixture","Compound","Element"], correct:1, explain:"Salad is the solid-phase example of a heterogeneous mixture, since its pieces aren't uniformly blended.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"tf", q:"Once salt is fully dissolved and evenly spread through water, the result is a heterogeneous mixture.", correct:false, explain:"A fully dissolved salt solution has uniform composition throughout, making it homogeneous, not heterogeneous.", section:"sec-composition-mixtures"},
+{topic:"composition", type:"mc", q:"Which question determines whether a pure substance is an element or a compound?", options:["Whether it's a solid or a liquid","Whether it consists of different types of atoms","Whether it dissolves in water","Whether it's flammable"], correct:1, explain:"The decision tree's first branch asks whether the substance consists of different types of atoms — no means element, yes means compound.", section:"sec-composition-tree"},
+
+{topic:"separation", type:"mc", q:"According to the \"Golden Rule\" of separation, you should choose the physical property where the mixture's components differ…", options:["The least","The most","Not at all","Only in color"], correct:1, explain:"The golden rule is to find the physical property where the components differ the most, and exploit it.", section:"sec-separation-rule"},
+{topic:"separation", type:"mc", q:"Which separation technique exploits differences in particle size?", options:["Distillation","Filtration","Crystallization","Magnetic separation"], correct:1, explain:"Filtration (and dialysis) exploit differences in particle size.", section:"sec-separation-rule"},
+{topic:"separation", type:"mc", q:"Which separation technique exploits differences in density and gravity?", options:["Decantation","Distillation","Sublimation","Chromatography"], correct:0, explain:"Decantation, centrifugation, and separating funnels all exploit density and gravity.", section:"sec-separation-rule"},
+{topic:"separation", type:"mc", q:"Distillation and evaporation exploit differences in…", options:["Magnetic susceptibility","Particle size","Boiling point (volatility)","Color"], correct:2, explain:"Distillation and evaporation both rely on differences in boiling point, or volatility.", section:"sec-separation-rule"},
+{topic:"separation", type:"mc", q:"For a mixture of sand (insoluble) in water, the mixture diagnostic tree recommends…", options:["Simple distillation","Filtration or decantation","Sublimation","Chromatography"], correct:1, explain:"Insoluble solid-liquid mixtures like sand and water are separated by filtration or decantation.", section:"sec-separation-tree"},
+{topic:"separation", type:"mc", q:"For salt (soluble) dissolved in water, the recommended separation technique is…", options:["Filtration","Magnetic separation","Evaporation or crystallization","Separating funnel"], correct:2, explain:"Soluble solid-liquid mixtures like salt water are separated by evaporation or crystallization.", section:"sec-separation-tree"},
+{topic:"separation", type:"mc", q:"For an immiscible liquid mixture like oil and water, the recommended technique is…", options:["Simple distillation","Separating funnel","Sublimation","Extraction"], correct:1, explain:"Immiscible liquids, which form distinct layers, are separated with a separating funnel.", section:"sec-separation-tree"},
+{topic:"separation", type:"mc", q:"For a miscible liquid mixture like ethanol and water, the recommended technique is…", options:["Separating funnel","Filtration","Simple or fractional distillation","Magnetic separation"], correct:2, explain:"Miscible liquids are separated by simple or fractional distillation, which exploits their different boiling points.", section:"sec-separation-tree"},
+{topic:"separation", type:"mc", q:"A solid-solid mixture such as iodine and sand, where one component sublimates, is best separated by…", options:["Sublimation","Decantation","Simple distillation","Separating funnel"], correct:0, explain:"When one solid sublimates (like iodine), sublimation cleanly separates it from a non-sublimating solid like sand.", section:"sec-separation-tree"},
+{topic:"separation", type:"mc", q:"In filtration, the liquid that passes through the filter paper is called the…", options:["Residue","Filtrate","Supernate","Sediment"], correct:1, explain:"The filtrate is the liquid that successfully passes through the filter; the residue is the solid left behind.", section:"sec-separation-filtration"},
+{topic:"separation", type:"mc", q:"In decantation, the solid that settles at the bottom of the container is called the…", options:["Filtrate","Supernate","Sediment","Residue only"], correct:2, explain:"The settled solid is the sediment; the clear liquid poured off is the supernate.", section:"sec-separation-filtration"},
+{topic:"separation", type:"tf", q:"Decantation exploits differences in density, while filtration exploits differences in particle size.", correct:true, explain:"Decantation relies on heavy solids settling out; filtration relies on a porous barrier trapping particles by size.", section:"sec-separation-filtration"},
+{topic:"separation", type:"mc", q:"Which technique concentrates a solution by heating, then cools it slowly to grow pure, well-formed crystals?", options:["Evaporation","Crystallization","Sublimation","Simple distillation"], correct:1, explain:"Crystallization reduces the solution's volume by heating, then cools it slowly so the solute forms pure crystals.", section:"sec-separation-evap"},
+{topic:"separation", type:"mc", q:"Evaporation, where the solvent is vaporized by continuous heating until only the dry solid remains, works best for…", options:["Thermally unstable solids","Thermally stable solids where crystal structure isn't important","Liquids with similar boiling points","Magnetic solids"], correct:1, explain:"Evaporation suits thermally stable solids, like recovering salt, where preserving crystal structure doesn't matter.", section:"sec-separation-evap"},
+{topic:"separation", type:"tf", q:"In a separating funnel holding oil and water, the denser liquid settles at the bottom and is drained off first.", correct:true, explain:"The heavier, denser liquid settles at the bottom of the funnel and is drained through the stopcock first.", section:"sec-separation-liquids"},
+{topic:"separation", type:"tf", q:"In simple distillation of an ethanol–water mixture, ethanol evaporates before water because it has a lower boiling point (about 78°C vs 100°C).", correct:true, explain:"The more volatile liquid, ethanol, boils and evaporates first because its boiling point is lower than water's.", section:"sec-separation-liquids"},
+{topic:"separation", type:"mc", q:"In a distillation setup, which part cools the vapor back into liquid form?", options:["Receiving flask","Thermometer","Condenser","Heat source"], correct:2, explain:"The condenser, surrounded by a cold water jacket, cools the vapor back into a liquid, which then drips into the receiving flask.", section:"sec-separation-liquids"},
+{topic:"separation", type:"tf", q:"Sublimation is useful for isolating substances such as iodine, ammonium chloride, camphor, or sulfur.", correct:true, explain:"These are the applications listed for sublimation, which bypasses the liquid phase entirely.", section:"sec-separation-solidsol"},
+{topic:"separation", type:"mc", q:"Extraction as a separation technique works by…", options:["Using magnetism to pull out one component","Introducing a solvent that selectively dissolves only one component of a solid mixture","Exploiting boiling-point differences","Exploiting particle-size differences"], correct:1, explain:"Extraction uses a solvent that selectively dissolves one component, leaving the other intact for filtration.", section:"sec-separation-solidsol"},
+{topic:"separation", type:"mc", q:"In paper chromatography, the Rf (retention factor) value is calculated as…", options:["(Distance moved by solvent front) ÷ (distance moved by compound)","(Distance moved by compound) ÷ (distance moved by solvent front)","(Distance moved by compound) × (distance moved by solvent front)","(Distance to solvent front) − (distance moved by compound)"], correct:1, explain:"Rf equals the distance moved by the compound divided by the distance moved by the solvent front.", section:"sec-separation-chromatography"},
+
+{topic:"method", type:"mc", q:"What is the first step of the scientific method described in the material?", options:["Question","Observe","Hypothesize","Experiment"], correct:1, explain:"The scientific method begins with Observe — noticing or wondering about something in the natural world.", section:"sec-method-steps"},
+{topic:"method", type:"mc", q:"Which step involves searching for existing answers through books, articles, or prior studies?", options:["Research","Experiment","Report","Observe"], correct:0, explain:"Research is the step where you gather existing knowledge to inform your hypothesis and experimental design.", section:"sec-method-steps"},
+{topic:"method", type:"mc", q:"A hypothesis is best described as…", options:["A proven scientific law","An educated guess or prediction based on knowledge and research","A random guess with no basis","The final conclusion of an experiment"], correct:1, explain:"A hypothesis is an educated guess — a prediction based on what you already know and have researched.", section:"sec-method-steps"},
+{topic:"method", type:"tf", q:"\"Report\" is the final step of the scientific method, where findings are shared through reports, presentations, or publications.", correct:true, explain:"Report/Publish is the last of the eight steps, allowing others to evaluate or replicate the work.", section:"sec-method-steps"},
+{topic:"method", type:"mc", q:"In Maya's tomato-plant example, her observation was that plants grew faster and taller on her sunny balcony than…", options:["In a dark closet","On her indoor windowsill, which gets indirect sunlight","In a greenhouse","When watered less often"], correct:1, explain:"Maya compared her sunny balcony plants to the same type of plants on her indoor windowsill, which only gets indirect sunlight.", section:"sec-method-example"},
+{topic:"method", type:"mc", q:"Which testable question did Maya form from her observation?", options:["\"Why do I like gardening?\"","\"How does the intensity of light affect the growth rate (height) of tomato plants?\"","\"What is photosynthesis?\"","\"Should I buy more tomato plants?\""], correct:1, explain:"Maya turned her observation into a testable question about how light intensity affects tomato plant growth rate.", section:"sec-method-example"},
+{topic:"method", type:"mc", q:"Maya's statement, \"I think tomatoes will grow taller when they receive more sunlight because sunlight provides energy for photosynthesis,\" is an example of which step?", options:["Observation","Research","Hypothesis","Report"], correct:2, explain:"This is Maya's hypothesis — her educated, research-informed prediction.", section:"sec-method-example"},
+{topic:"method", type:"mc", q:"In an experiment testing how light intensity affects tomato height, the variable the researcher deliberately changes is the…", options:["Dependent variable","Independent variable","Controlled variable","Extraneous variable"], correct:1, explain:"The independent variable is the one the researcher deliberately changes — here, the light intensity.", section:"sec-method-experiment"},
+{topic:"method", type:"mc", q:"The variable a researcher measures as an outcome, such as plant height, is called the…", options:["Independent variable","Controlled variable","Dependent variable","Constant"], correct:2, explain:"The dependent variable is what you measure as an outcome of the experiment.", section:"sec-method-experiment"},
+{topic:"method", type:"tf", q:"Controlled variables are the variables that a researcher deliberately changes to observe an effect.", correct:false, explain:"That describes the independent variable. Controlled variables are the ones kept the same throughout the experiment.", section:"sec-method-experiment"},
+{topic:"method", type:"tf", q:"The \"Procedure\" part of designing an experiment is a step-by-step plan for carrying it out.", correct:true, explain:"Procedure is defined as the step-by-step plan for conducting the experiment, alongside variables and materials.", section:"sec-method-experiment"},
+{topic:"method", type:"mc", q:"In the tomato sunlight data, yield rose from 1.2 kg at 4 hours of sunlight to 5.1 kg at 10 hours. What was the verdict on the hypothesis?", options:["Rejected","Supported","Inconclusive","Not tested"], correct:1, explain:"Yield rose continuously with more sunlight — a 325% increase from lowest to highest treatment — so the hypothesis was supported.", section:"sec-method-data"},
+{topic:"method", type:"mc", q:"Organizing results into tables, charts, or graphs to look for patterns belongs to which step?", options:["Hypothesizing","Analyzing Data","Research","Report"], correct:1, explain:"Analyzing Data is where results are organized and examined for patterns or differences.", section:"sec-method-data"},
+{topic:"method", type:"mc", q:"According to the replication checklist for reporting results, which of these is NOT listed as necessary?", options:["Data accessibility","Detailed methods","Statistical transparency","The researcher's personal opinion"], correct:3, explain:"The checklist calls for data accessibility, detailed methods, cultivar/specs, and statistical transparency — not personal opinion.", section:"sec-method-report"},
+
+{topic:"lab", type:"mc", q:"When measuring the volume of a sample solution, which apparatus is generally the most accurate?", options:["Beaker glass","Erlenmeyer flask","Test tube","Pipette"], correct:3, explain:"A pipette is calibrated for precise volumes, making it more accurate than a beaker, flask, or unmarked test tube.", section:"sec-lab-glassware"},
+{topic:"lab", type:"mc", q:"To help time (\"the clock of\") a neutralization reaction between hydrochloric acid and sodium hydroxide, which tool is most useful?", options:["Ruler","Digital balance","Stopwatch","Cylinder measure"], correct:2, explain:"A stopwatch is the tool for timing how long a reaction takes.", section:"sec-lab-glassware"},
+{topic:"lab", type:"mc", q:"A hazard symbol showing liquid dripping from test tubes onto a hand and a surface most likely represents which hazard?", options:["Flammable","Corrosive","Oxidizing","Toxic"], correct:1, explain:"That pictogram is the standard symbol for a corrosive substance.", section:"sec-lab-hazard"},
+{topic:"lab", type:"tf", q:"Bottles labeled with an oxidizing hazard symbol should never be stored next to bottles labeled as flammable.", correct:true, explain:"Oxidizing agents can accelerate the combustion of flammable substances, so the two should never be stored together.", section:"sec-lab-hazard"},
+{topic:"lab", type:"mc", q:"What is the correct first-aid response when a hand is exposed to hazardous chemicals?", options:["Apply toothpaste to the hand","Wipe the hand with a paper tissue","Flush the hand under continuous running water","Apply high-concentration alcohol to the hand"], correct:2, explain:"Flushing the affected area under continuous running water is the correct first-aid response.", section:"sec-lab-firstaid"},
+{topic:"lab", type:"tf", q:"A large, uncontrolled fire in the lab should be tackled alone with whatever is nearby, rather than evacuating.", correct:false, explain:"For a large fire, the recommended action is to evacuate the area and alert emergency services, not fight it alone.", section:"sec-lab-firstaid"},
+{topic:"lab", type:"mc", q:"A small, contained fire in the lab is typically handled (by a trained person) by…", options:["Evacuating the entire building immediately without acting","Using an appropriate fire extinguisher or fire blanket","Pouring large amounts of water on any fire","Ignoring it and continuing work"], correct:1, explain:"Small, contained fires can usually be controlled directly with an appropriate extinguisher or fire blanket.", section:"sec-lab-firstaid"},
+{topic:"lab", type:"mc", q:"Broken glass in the chemistry lab should be handled by…", options:["Picking it up directly with bare hands","Using a dustpan, brush, or tongs and disposing of it in a designated glass/sharps bin","Sweeping it into the regular trash by hand","Leaving it on the floor"], correct:1, explain:"Broken glass should be swept up with a dustpan/brush or tongs and disposed of in a designated sharps or glass bin.", section:"sec-lab-firstaid"},
+{topic:"lab", type:"tf", q:"An electronic balance should be zeroed before weighing so the reading reflects only the mass of the sample.", correct:true, explain:"Zeroing removes the weight of any container or residual reading, so the display shows only the sample's mass.", section:"sec-lab-balance"},
+{topic:"lab", type:"mc", q:"Which of the following could cause an inaccurate mass measurement on an electronic balance?", options:["Zeroing the balance before use","Placing the balance on a stable, level surface","Air currents or drafts disturbing the balance","Using a clean weighing pan"], correct:2, explain:"Drafts or air currents can disturb a sensitive balance and throw off the reading.", section:"sec-lab-balance"},
+{topic:"lab", type:"tf", q:"Before attaching a pipette bulb (filler) to a pipette, you should first squeeze the air out of the bulb.", correct:true, explain:"Squeezing the air out first creates the vacuum needed to draw liquid up into the pipette once it's attached.", section:"sec-lab-pipette"},
+{topic:"lab", type:"mc", q:"If air is not squeezed out of the pipette bulb before use, what is likely to happen?", options:["The pipette will draw liquid too quickly and overflow","It won't be possible to draw liquid up into the pipette properly","The liquid will instantly evaporate","The bulb will shatter"], correct:1, explain:"Without squeezing the air out first, there's no vacuum to draw liquid properly into the pipette.", section:"sec-lab-pipette"},
+{topic:"lab", type:"tf", q:"In paper chromatography, the baseline where the sample is spotted should be drawn in pen rather than pencil, since ink is easier to see.", correct:false, explain:"The baseline should be drawn in pencil — pen ink can dissolve and run in the solvent, contaminating the results.", section:"sec-lab-chromprep"},
+{topic:"lab", type:"mc", q:"Why must the sample spot in paper chromatography sit above the level of the solvent in the container?", options:["So the solvent doesn't dissolve the spot directly before it can travel up the paper","To make the experiment take longer","So the paper doesn't get wet at all","Because pencil marks must stay completely dry"], correct:0, explain:"If the spot sits in the solvent itself, it will just dissolve away instead of migrating up the paper to separate.", section:"sec-lab-chromprep"}
+];
+
+/* ============================================================
+   QUIZ APP LOGIC
+============================================================ */
+const topicChips = document.getElementById('topicChips');
+const lengthChips = document.getElementById('lengthChips');
+const availNote = document.getElementById('availNote');
+const startQuizBtn = document.getElementById('startQuizBtn');
+
+let selectedTopic = 'all';
+let selectedLength = 10;
+
+function countForTopic(topic){
+  return topic === 'all' ? QUESTIONS.length : QUESTIONS.filter(q => q.topic === topic).length;
+}
+
+function renderTopicChips(){
+  const entries = [['all','All topics']].concat(Object.entries(TOPICS));
+  topicChips.innerHTML = '';
+  entries.forEach(([key,label]) => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (key === selectedTopic ? ' selected' : '');
+    btn.textContent = label + ' (' + countForTopic(key) + ')';
+    btn.addEventListener('click', () => {
+      selectedTopic = key;
+      renderTopicChips();
+      renderLengthChips();
+    });
+    topicChips.appendChild(btn);
+  });
+}
+
+function renderLengthChips(){
+  const available = countForTopic(selectedTopic);
+  if(selectedLength > available) selectedLength = [10,25,50,100].filter(n => n <= available).pop() || available;
+  lengthChips.innerHTML = '';
+  [10,25,50,100].forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (n === selectedLength ? ' selected' : '');
+    btn.textContent = n + ' questions';
+    if(n > available){
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', () => {
+        selectedLength = n;
+        renderLengthChips();
+      });
+    }
+    lengthChips.appendChild(btn);
+  });
+  availNote.textContent = available + ' question' + (available===1?'':'s') + ' available for this topic. Your quiz will use ' + Math.min(selectedLength, available) + '.';
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+renderTopicChips();
+renderLengthChips();
+
+/* ---- state ---- */
+let quizQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let answerLog = []; // {q, chosenText, isCorrect}
+
+const screenSetup = document.getElementById('screenSetup');
+const screenQuestion = document.getElementById('screenQuestion');
+const screenResults = document.getElementById('screenResults');
+
+function showScreen(el){
+  [screenSetup, screenQuestion, screenResults].forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+startQuizBtn.addEventListener('click', () => {
+  const pool = selectedTopic === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.topic === selectedTopic);
+  const n = Math.min(selectedLength, pool.length);
+  quizQuestions = shuffle(pool).slice(0, n);
+  currentIndex = 0;
+  score = 0;
+  answerLog = [];
+  showScreen(screenQuestion);
+  renderQuestion();
+});
+
+const progressLabel = document.getElementById('progressLabel');
+const scoreLabel = document.getElementById('scoreLabel');
+const progressFill = document.getElementById('progressFill');
+const qTopicPill = document.getElementById('qTopicPill');
+const qText = document.getElementById('qText');
+const qOptions = document.getElementById('qOptions');
+const feedbackBox = document.getElementById('feedbackBox');
+const feedbackTitle = document.getElementById('feedbackTitle');
+const feedbackExplain = document.getElementById('feedbackExplain');
+const reviewBtn = document.getElementById('reviewBtn');
+const nextRow = document.getElementById('nextRow');
+const nextBtn = document.getElementById('nextBtn');
+
+function renderQuestion(){
+  const item = quizQuestions[currentIndex];
+  progressLabel.textContent = 'Question ' + (currentIndex+1) + ' of ' + quizQuestions.length;
+  scoreLabel.textContent = 'Score: ' + score;
+  progressFill.style.width = (currentIndex / quizQuestions.length * 100) + '%';
+  qTopicPill.textContent = TOPICS[item.topic];
+  qText.textContent = item.q;
+  feedbackBox.classList.remove('show','good','bad');
+  nextRow.classList.remove('show');
+  qOptions.innerHTML = '';
+
+  const letters = ['A','B','C','D'];
+  const optionDefs = item.type === 'tf'
+    ? [{label:'True', isCorrect: item.correct === true}, {label:'False', isCorrect: item.correct === false}]
+    : item.options.map((opt, i) => ({label: opt, isCorrect: i === item.correct}));
+
+  optionDefs.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = item.type === 'tf' ? (i===0?'T':'F') : letters[i];
+    const label = document.createElement('span');
+    label.textContent = opt.label;
+    btn.appendChild(badge);
+    btn.appendChild(label);
+    btn.addEventListener('click', () => handleAnswer(opt, btn, optionDefs));
+    qOptions.appendChild(btn);
+  });
+}
+
+function handleAnswer(chosenOpt, chosenBtn, optionDefs){
+  const item = quizQuestions[currentIndex];
+  const allBtns = Array.from(qOptions.children);
+  allBtns.forEach(b => b.disabled = true);
+
+  optionDefs.forEach((opt, i) => {
+    if(opt.isCorrect) allBtns[i].classList.add('correct');
+  });
+  if(!chosenOpt.isCorrect) chosenBtn.classList.add('incorrect');
+
+  const isCorrect = chosenOpt.isCorrect;
+  if(isCorrect) score++;
+
+  answerLog.push({
+    q: item,
+    chosenText: chosenOpt.label,
+    correctText: optionDefs.find(o => o.isCorrect).label,
+    isCorrect: isCorrect
+  });
+
+  feedbackBox.classList.add('show', isCorrect ? 'good' : 'bad');
+  feedbackTitle.textContent = isCorrect ? 'Correct!' : 'Not quite.';
+  feedbackExplain.textContent = item.explain;
+  reviewBtn.onclick = () => reviewSection(item.section);
+
+  scoreLabel.textContent = 'Score: ' + score;
+  nextRow.classList.add('show');
+  nextBtn.textContent = (currentIndex === quizQuestions.length - 1) ? 'See results' : 'Next question';
+}
+
+nextBtn.addEventListener('click', () => {
+  currentIndex++;
+  if(currentIndex >= quizQuestions.length){
+    showResults();
+  } else {
+    renderQuestion();
+  }
+});
+
+function showResults(){
+  progressFill.style.width = '100%';
+  showScreen(screenResults);
+
+  const total = quizQuestions.length;
+  document.getElementById('finalScoreNum').textContent = score + '/' + total;
+  document.getElementById('finalScorePct').textContent = Math.round(score/total*100) + '% correct';
+
+  const byTopic = {};
+  answerLog.forEach(a => {
+    const t = a.q.topic;
+    if(!byTopic[t]) byTopic[t] = {correct:0, total:0};
+    byTopic[t].total++;
+    if(a.isCorrect) byTopic[t].correct++;
+  });
+
+  const breakdownList = document.getElementById('breakdownList');
+  breakdownList.innerHTML = '';
+  Object.keys(byTopic).forEach(t => {
+    const stat = byTopic[t];
+    const pct = Math.round(stat.correct/stat.total*100);
+    const row = document.createElement('div');
+    row.className = 'bd-row';
+    row.innerHTML =
+      '<span class="bd-label">' + TOPICS[t] + '</span>' +
+      '<span class="bd-track"><span class="bd-fill" style="width:' + pct + '%"></span></span>' +
+      '<span class="bd-frac">' + stat.correct + '/' + stat.total + '</span>';
+    breakdownList.appendChild(row);
+  });
+
+  const missedWrap = document.getElementById('missedWrap');
+  const missedList = document.getElementById('missedList');
+  missedList.innerHTML = '';
+  const missed = answerLog.filter(a => !a.isCorrect);
+  if(missed.length === 0){
+    missedWrap.style.display = 'none';
+  } else {
+    missedWrap.style.display = 'block';
+    missed.forEach(a => {
+      const item = document.createElement('div');
+      item.className = 'missed-item';
+      item.innerHTML =
+        '<div class="missed-q">' + a.q.q + '</div>' +
+        '<div class="missed-ans">Your answer: <span class="you">' + a.chosenText + '</span></div>' +
+        '<div class="missed-ans">Correct answer: <span class="right">' + a.correctText + '</span></div>' +
+        '<div class="missed-explain">' + a.q.explain + '</div>';
+      const linkBtn = document.createElement('button');
+      linkBtn.className = 'btn-text';
+      linkBtn.style.marginTop = '8px';
+      linkBtn.textContent = 'Review this in Study Material';
+      linkBtn.addEventListener('click', () => reviewSection(a.q.section));
+      item.appendChild(linkBtn);
+      missedList.appendChild(item);
+    });
+  }
+}
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  const pool = selectedTopic === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.topic === selectedTopic);
+  const n = Math.min(selectedLength, pool.length);
+  quizQuestions = shuffle(pool).slice(0, n);
+  currentIndex = 0;
+  score = 0;
+  answerLog = [];
+  showScreen(screenQuestion);
+  renderQuestion();
+});
+
+document.getElementById('backSetupBtn').addEventListener('click', () => {
+  renderTopicChips();
+  renderLengthChips();
+  showScreen(screenSetup);
+});
+</script>
+</body>
+</html>
